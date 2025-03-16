@@ -46,24 +46,21 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
   CCMRAM    (xrw)    : ORIGIN = 0x10000000,   LENGTH = 8K
-  RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 32K
-  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 128K
+  JRAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 0x14
+  RAM    (xrw)    : ORIGIN = 0x20000014,   LENGTH = (0x8000 - 0x14)
+  FLASH    (rx)    : ORIGIN = 0x8008000,   LENGTH = (0x20000 - 0x8000)
 }
 
 /* Sections */
 SECTIONS
 {
-  /* The startup code into "FLASH" Rom type memory */
-  .isr_vector :
+
+  /* The program code and other data into "FLASH" Rom type memory */
+  .text 0x8008000:
   {
     . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
-    . = ALIGN(4);
-  } >FLASH
-
-  /* The program code and other data into "FLASH" Rom type memory */
-  .text :
-  {
+    KEEP(*(.app_info)) /* Startup code */
     . = ALIGN(4);
     *(.text)           /* .text sections (code) */
     *(.text*)          /* .text* sections (code) */
@@ -195,6 +192,11 @@ SECTIONS
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
   } >RAM
+  
+  .jump_Space (NOLOAD):
+  {
+    . = ALIGN(8);
+  } >JRAM
 
   /* Remove information from the compiler libraries */
   /DISCARD/ :

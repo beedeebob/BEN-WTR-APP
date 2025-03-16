@@ -36,6 +36,7 @@
 #include "usbPacketIDs.h"
 #include "usbHandler.h"
 #include "stdbool.h"
+#include "utils.h"
 
 /* Private define ------------------------------------------------------------*/
 #define USR_KEEPALIVETIME					500			//500ms

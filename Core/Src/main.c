@@ -22,6 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "appInfo.h"
 #include "weather.h"
 #include "bme280.h"
 #include "led.h"
@@ -31,6 +32,7 @@
 #include "esp.h"
 #include "espPost.h"
 #include "espDriver.h"
+#include "jump.h"
 
 /* USER CODE END Includes */
 
@@ -83,6 +85,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+	SCB->VTOR = APPSTARTADDRESS | FLASH_BASE;
 
   /* USER CODE END 1 */
 
