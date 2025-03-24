@@ -17,7 +17,7 @@
 /* Exported defines ----------------------------------------------------------*/
 #define QUEUE_COUNT(Q)					(((Q)->in - (Q)->out) & ((Q)->size  - 1))
 #define QUEUE_SPACE(Q)					((Q)->size - 1 - QUEUE_COUNT(Q))
-#define QUEUE_PTRLOOP(Q, PTR)				((PTR) & (Q->size - 1))
+#define QUEUE_PTRLOOP(Q, PTR)			((PTR) & ((Q)->size - 1))
 #define QUEUE_TOU32(Q, OFFSET)			((Q)->pBuff[QUEUE_PTRLOOP((Q), OFFSET)] + ((Q)->pBuff[QUEUE_PTRLOOP((Q), OFFSET + 1)] << 8) + ((Q)->pBuff[QUEUE_PTRLOOP((Q), OFFSET + 2)] << 16)  + ((Q)->pBuff[QUEUE_PTRLOOP((Q), OFFSET + 3)] << 24) )
 #define QUEUE_TOU24(Q, OFFSET)			((Q)->pBuff[QUEUE_PTRLOOP((Q), OFFSET)] + ((Q)->pBuff[QUEUE_PTRLOOP((Q), OFFSET + 1)] << 8) + ((Q)->pBuff[QUEUE_PTRLOOP((Q), OFFSET + 2)] << 16))
 #define QUEUE_TOU16(Q, OFFSET)			((Q)->pBuff[QUEUE_PTRLOOP((Q), OFFSET)] + ((Q)->pBuff[QUEUE_PTRLOOP((Q), OFFSET + 1)] << 8))

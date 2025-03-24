@@ -18,7 +18,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "espPost.h"
-#include "esp.h"
+#include "espCommand.h"
 #include "espPktIds.h"
 #include "stdbool.h"
 #include "main.h"
@@ -55,7 +55,9 @@ typedef struct
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-ESP_td esp;
+extern ESP_td esp;
+extern ESP_CMD_td espCmd;
+static ESP_CMDInterface_td espPacketInterface;
 
 static uint8_t state = WTRPST_STATE_IDLE;
 static uint16_t tmr;
@@ -67,6 +69,8 @@ static int32_t wtrTemperature;
 static uint32_t wtrHumidity;
 
 /* Private function prototypes -----------------------------------------------*/
+static void WTRPST_ESPCommandHandler(void *espCmd, ESPPKT_RxPacket_TD *packet);
+
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -87,10 +91,13 @@ void WTRPST_tick(void)
 		if(!flags.post)
 			break;
 
+		espPacketInterface.packetReceived = WTRPST_ESPCommandHandler;
+		ESP_CMD_SubscribeToPackets(&espCmd, &espPacketInterface);
+
 		//Hardware power up
 		HAL_GPIO_WritePin(GPIO_ESP_FLASH_GPIO_Port, GPIO_ESP_FLASH_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIO_ESP_NPD_EN_GPIO_Port, GPIO_ESP_NPD_EN_Pin, GPIO_PIN_SET);
-		tmr = 50;
+		tmr = 500;
 		state = WTRPST_STATE_AWAITSTABLEPOWER;
 		break;
 
@@ -98,7 +105,7 @@ void WTRPST_tick(void)
 		if(tmr != 0)
 			break;
 
-		if(ESP_Command(&esp, espPkt_WifiConnect, NULL, 0) == ESP_OK)
+		if(ESP_CMD_SendCommand(&espCmd, espPkt_WifiConnect, NULL, 0) == ESP_OK)
 		{
 			state = WTRPST_STATE_AWAITWIFICONNECTACK;
 			tmr = 100;
@@ -120,7 +127,7 @@ void WTRPST_tick(void)
 	case WTRPST_STATE_AWAITWIFICONNECTED:
 		if(flags.wifiConnected)
 		{
-			if(ESP_Command(&esp, espPkt_StartMQTT, NULL, 0) == ESP_OK)
+			if(ESP_CMD_SendCommand(&espCmd, espPkt_StartMQTT, NULL, 0) == ESP_OK)
 			{
 				state = WTRPST_STATE_AWAITMQTTCONNECTACK;
 				tmr = 100;
@@ -160,7 +167,7 @@ void WTRPST_tick(void)
 			txBuffer[len++] = (uint8_t)(wtrHumidity >> 8);
 			txBuffer[len++] = (uint8_t)(wtrHumidity >> 16);
 			txBuffer[len++] = (uint8_t)(wtrHumidity >> 24);
-			if(ESP_Command(&esp, espPkt_SetWeather, txBuffer, len) == ESP_OK)
+			if(ESP_CMD_SendCommand(&espCmd, espPkt_SetWeather, txBuffer, len) == ESP_OK)
 			{
 				state = WTRPST_STATE_AWAITMQTTPOSTACK;
 				tmr = 100;
@@ -219,7 +226,7 @@ void WTRPST_tick(void)
 		tmrUpdate--;
 
 	if(!tmrUpdate && (state != WTRPST_STATE_IDLE))
-		tmrUpdate = (ESP_Command(&esp, espPkt_Status, NULL, 0) == ESP_OK) ? 100 : 10;
+		tmrUpdate = (ESP_CMD_SendCommand(&espCmd, espPkt_Status, NULL, 0) == ESP_OK) ? 100 : 10;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -230,24 +237,24 @@ void WTRPST_tick(void)
   */
 uint8_t commands[8];
 uint8_t commandsCount;
-void WTRPST_ESPCommandHandler(uint8_t *data, uint32_t length)
+static void WTRPST_ESPCommandHandler(void *espCmd, ESPPKT_RxPacket_TD *packet)
 {
-	commands[commandsCount] = data[0];
+	commands[commandsCount] = packet->data[0];
 	commandsCount = (commandsCount + 1) & (sizeof(commands) - 1);
-	switch(data[0])
+	switch(packet->data[0])
 	{
 	case espPkt_ACK:
-		if(data[1] == espPkt_WifiConnect)
+		if(packet->data[1] == espPkt_WifiConnect)
 			flags.wifiConnectACK = true;
-		else if(data[1] == espPkt_StartMQTT)
+		else if(packet->data[1] == espPkt_StartMQTT)
 			flags.mqttConnectACK = true;
-		else if (data[1] == espPkt_SetWeather)
+		else if (packet->data[1] == espPkt_SetWeather)
 			flags.weatherPostACK = true;
 		break;
 	case espPkt_Status:
-			flags.wifiConnected = (data[1] & 0x01) ? true : false;
-			flags.mqttConnected = (data[1] & 0x02) ? true : false;
-			flags.weatherPost = (data[1] & 0x04) ? true : false;
+			flags.wifiConnected = (packet->data[1] & 0x01) ? true : false;
+			flags.mqttConnected = (packet->data[1] & 0x02) ? true : false;
+			flags.weatherPost = (packet->data[1] & 0x04) ? true : false;
 		break;
 	}
 }

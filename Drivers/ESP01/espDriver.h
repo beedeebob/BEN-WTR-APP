@@ -19,7 +19,5 @@
 /* Exported variables --------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void ESPDRV_Init(void);
-void ESPDRV_milli(void);
-void ESPDRV_DMATransferCompleteHandler(DMA_TypeDef * dma);
 
 #endif /* ESP01_ESPDRIVER_H_ */

@@ -50,6 +50,11 @@
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Device/ST/STM32F3xx/Include"/>
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="../Drivers/ESP01"/>
+									<listOptionValue builtIn="false" value="../Drivers/ESP01/Core"/>
+									<listOptionValue builtIn="false" value="../Drivers/ESP01/Command"/>
+									<listOptionValue builtIn="false" value="../Drivers/ESP01/FTP"/>
+									<listOptionValue builtIn="false" value="../Drivers/ESP01/MQTT"/>
+									<listOptionValue builtIn="false" value="../Drivers/ESP01/WIFI"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F3xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy"/>
 									<listOptionValue builtIn="false" value="../USB_DEVICE/App"/>
@@ -83,8 +88,8 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
+						<entry excluding="ESP01/Drivers\ESP01\Core" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="USB_DEVICE"/>
 					</sourceEntries>
 				</configuration>
@@ -136,6 +141,11 @@
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Device/ST/STM32F3xx/Include"/>
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="../Drivers/ESP01"/>
+									<listOptionValue builtIn="false" value="../Drivers/ESP01/Core"/>
+									<listOptionValue builtIn="false" value="../Drivers/ESP01/Command"/>
+									<listOptionValue builtIn="false" value="../Drivers/ESP01/FTP"/>
+									<listOptionValue builtIn="false" value="../Drivers/ESP01/MQTT"/>
+									<listOptionValue builtIn="false" value="../Drivers/ESP01/WIFI"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F3xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy"/>
 									<listOptionValue builtIn="false" value="../USB_DEVICE/App"/>
@@ -169,8 +179,8 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
+						<entry excluding="ESP01/Drivers\ESP01\Core" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="USB_DEVICE"/>
 					</sourceEntries>
 				</configuration>

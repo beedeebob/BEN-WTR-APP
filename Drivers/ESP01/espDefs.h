@@ -18,7 +18,15 @@
 #error ESPCOMMS_BUFFERSIZE should be large enough to hold ESPPKT_MAXDATALENGTH + 12
 #endif
 
-#define ESPCOMMS_BUFFERSIZE				128
+#define ESP_BUFFERSIZE					256				//Must be a power of 2
+#if(ESP_BUFFERSIZE & (ESP_BUFFERSIZE - 1))
+#error ESP_BUFFERSIZE must be a power of 2
+#endif
+
+#define ESP_CMD_BUFFERSIZE				256				//Must be a power of 2
+#if(ESP_CMD_BUFFERSIZE & (ESP_CMD_BUFFERSIZE - 1))
+#error ESP_CMD_BUFFERSIZE must be a power of 2
+#endif
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/

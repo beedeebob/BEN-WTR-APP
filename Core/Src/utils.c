@@ -115,3 +115,62 @@ uint16_t crc16_ccitt_accumulate(uint16_t crc, uint8_t value)
     }
     return crc;
 }
+
+
+/* ---------------------------------------------------------------------------*/
+/**
+ * @brief Return the maximum value
+ * @param val1
+ * @param val2
+ * @return Maximum value
+ */
+__inline__ uint32_t utlMax(uint32_t val1, uint32_t val2)
+{
+	return (val1 > val2) ? val1 : val2;
+}
+
+/* ---------------------------------------------------------------------------*/
+/**
+ * @brief Return the minimum value
+ * @param val1
+ * @param val2
+ * @return Minimum value
+ */
+__inline__ uint32_t utlMin(uint32_t val1, uint32_t val2)
+{
+	return (val1 > val2) ? val2 : val1;
+}
+
+/* ---------------------------------------------------------------------------*/
+/**
+ * @brief Get a uint16_t value from an array
+ * @param data: pointer to the array
+ * @param offset: offset from which to read in the array
+ * @return uint16_t value
+ */
+__inline__ uint16_t arrToUint16(uint8_t *data, uint32_t offset)
+{
+	return (data[offset] + (data[offset + 1] << 8));
+}
+/* ---------------------------------------------------------------------------*/
+/**
+ * @brief Get a uint24_t value from an array
+ * @param data: pointer to the array
+ * @param offset: offset from which to read in the array
+ * @return uint24_t value
+ */
+__inline__ uint32_t arrToUint24(uint8_t *data, uint32_t offset)
+{
+	return (data[offset] + (data[offset + 1] << 8) + (data[offset + 2] << 16));
+}
+/* ---------------------------------------------------------------------------*/
+/**
+ * @brief Get a uint32_t value from an array
+ * @param data: pointer to the array
+ * @param offset: offset from which to read in the array
+ * @return uint32_t value
+ */
+__inline__ uint32_t arrToUint32(uint8_t *data, uint32_t offset)
+{
+	return (data[offset] + (data[offset + 1] << 8) + (data[offset + 2] << 16) + (data[offset + 3] << 24));
+}

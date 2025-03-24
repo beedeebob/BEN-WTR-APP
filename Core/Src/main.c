@@ -30,6 +30,7 @@
 #include "usbStreamReader.h"
 #include "fileStreamWriter.h"
 #include "esp.h"
+#include "espCommand.h"
 #include "espPost.h"
 #include "espDriver.h"
 #include "jump.h"
@@ -54,7 +55,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-extern ESP_td esp;
+ESP_td esp;
+ESP_CMD_td espCmd;
 
 /* USER CODE END PV */
 
@@ -115,9 +117,8 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   ESP_Initialize(&esp);
-  ESP_Start(&esp);
   ESPDRV_Init();
-
+  ESP_CMD_Start(&espCmd, &esp);
 
   /* USER CODE END 2 */
 
@@ -134,7 +135,6 @@ int main(void)
 		  milliTickLast++;
 		  MAIN_milli();
 		  WTRPST_tick();
-		  ESPDRV_milli();
 	  }
   }
   /* USER CODE END 3 */
@@ -555,9 +555,6 @@ static void MX_DMA_Init(void)
   /* DMA1_Channel4_IRQn interrupt configuration */
   NVIC_SetPriority(DMA1_Channel4_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
   NVIC_EnableIRQ(DMA1_Channel4_IRQn);
-  /* DMA1_Channel7_IRQn interrupt configuration */
-  NVIC_SetPriority(DMA1_Channel7_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
-  NVIC_EnableIRQ(DMA1_Channel7_IRQn);
 
 }
 
@@ -623,7 +620,8 @@ void MAIN_milli(void)
 	USBHND_milli();
 	USR_millisecondTick();
 	FSW_tick();
-	ESP_tick();
+	ESP_tick(&esp);
+	ESP_CMD_Tick(&espCmd);
 }
 
 /* USER CODE END 4 */

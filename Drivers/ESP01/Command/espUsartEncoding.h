@@ -12,7 +12,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "espCore.h"
-#include "espQueue.h"
 #include "espDefs.h"
 
 
@@ -42,10 +41,13 @@ typedef struct
 
 /* Exported variables --------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-ESPPKT_DECODEEnum ESPPKT_Decode(ESPQ_Typedef *queue, ESPPKT_RxPacket_TD *packet);
-ESP_Result ESPPKT_Encode(uint8_t *data, uint16_t length, ESPQ_Typedef *queue);
-ESP_Result ESPPKT_EncodeStart(ESPQ_Typedef *queue, uint16_t totallength, uint8_t *partData, uint16_t partlength, uint32_t *crc);
-ESP_Result ESPPKT_EncodePart(ESPQ_Typedef *queue, uint8_t *partData, uint16_t partlength, uint32_t *crc);
-ESP_Result ESPPKT_EncodeEnd(ESPQ_Typedef *queue, uint8_t *data, uint16_t length, uint32_t *crc);
+ESPPKT_DECODEEnum ESPPKT_Decode(QUEUE_Typedef *queue, ESPPKT_RxPacket_TD *packet);
+ESP_Result ESPPKT_Encode(uint8_t *data, uint16_t length, QUEUE_Typedef *queue);
+ESP_Result ESPPKT_EncodeStart(QUEUE_Typedef *queue, uint16_t totallength, uint8_t *partData, uint16_t partlength, uint32_t *crc);
+ESP_Result ESPPKT_EncodeStartArray(uint8_t **data, uint16_t totallength, uint8_t *partData, uint16_t partlength, uint32_t *crc);
+ESP_Result ESPPKT_EncodePart(QUEUE_Typedef *queue, uint8_t *partData, uint16_t partlength, uint32_t *crc);
+ESP_Result ESPPKT_EncodePartArray(uint8_t **data, uint8_t *partData, uint16_t partlength, uint32_t *crc);
+ESP_Result ESPPKT_EncodeEnd(QUEUE_Typedef *queue, uint8_t *data, uint16_t length, uint32_t *crc);
+ESP_Result ESPPKT_EncodeEndArray(uint8_t **data, uint8_t *partData, uint16_t length, uint32_t *crc);
 
 #endif /* BEN_PACKET_H */

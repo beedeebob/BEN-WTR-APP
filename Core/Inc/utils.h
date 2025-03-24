@@ -29,4 +29,11 @@ uint16_t crc16_ccitt_calculateQueue(uint16_t crc, QUEUE_Typedef *queue, uint32_t
 uint16_t crc16_ccitt_calculateData(uint16_t crc, uint8_t *data, uint32_t offset, uint32_t length);
 uint16_t crc16_ccitt_accumulate(uint16_t crc, uint8_t value);
 
+uint32_t utlMax(uint32_t val1, uint32_t val2);
+uint32_t utlMin(uint32_t val1, uint32_t val2);
+
+uint16_t arrToUint16(uint8_t *data, uint32_t offset);
+uint32_t arrToUint24(uint8_t *data, uint32_t offset);
+uint32_t arrToUint32(uint8_t *data, uint32_t offset);
+
 #endif /* INC_UTILS_H_ */
