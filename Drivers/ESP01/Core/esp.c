@@ -23,7 +23,8 @@ typedef enum
 	ESP_MODESTATE_AWAITBOOTFLASH,
 	ESP_MODESTATE_AWAITBOOTENABLE,
 	ESP_MODESTATE_BOOT,
-	ESP_MODESTATE_AWAITAPP,
+	ESP_MODESTATE_AWAITAPPFLASH,
+	ESP_MODESTATE_AWAITAPPENABLE,
 	ESP_MODESTATE_APP
 }ESP_ModeStateEnum;
 
@@ -120,6 +121,7 @@ static void ESP_ModeTick(ESP_td *esp)
 		esp->bootState = ESP_MODESTATE_AWAITRESET;
 		break;
 
+		/***** Reset *****/
 	case ESP_MODESTATE_AWAITRESET:
 		if(esp->tmrBoot > 0)
 			break;
@@ -128,17 +130,18 @@ static void ESP_ModeTick(ESP_td *esp)
 		if(esp->bootMode == ESP_BOOTMODE_Boot)
 		{
 			esp->tmrBoot = 5;
-			ESP_GPIO0(esp, 1);	//FLASH
+			ESP_GPIO0(esp, 0);	//FLASH
 			esp->bootState = ESP_MODESTATE_AWAITBOOTFLASH;
 		}
 		else if (esp->bootMode == ESP_BOOTMODE_Application)
 		{
 			esp->tmrBoot = 5;
-			ESP_GPIOEN(esp, 1);
-			esp->bootState = ESP_MODESTATE_AWAITAPP;
+			ESP_GPIO0(esp, 1);	//FLASH
+			esp->bootState = ESP_MODESTATE_AWAITAPPFLASH;
 		}
 		break;
 
+		/***** Boot *****/
 	case ESP_MODESTATE_AWAITBOOTFLASH:
 		if(esp->tmrBoot > 0)
 			break;
@@ -161,7 +164,15 @@ static void ESP_ModeTick(ESP_td *esp)
 		}
 		break;
 
-	case ESP_MODESTATE_AWAITAPP:
+		/***** Application *****/
+	case ESP_MODESTATE_AWAITAPPFLASH:
+		if(esp->tmrBoot > 0)
+			break;
+		esp->tmrBoot = 5;
+		ESP_GPIOEN(esp, 1);
+		ESP_GPIORESET(esp, 0);
+		esp->bootState = ESP_MODESTATE_AWAITAPPENABLE;
+	case ESP_MODESTATE_AWAITAPPENABLE:
 		if(esp->tmrBoot > 0)
 			break;
 		esp->bootState = ESP_MODESTATE_APP;

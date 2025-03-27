@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "espPost.h"
 #include "espCommand.h"
+#include "esp.h"
 #include "espPktIds.h"
 #include "stdbool.h"
 #include "main.h"
@@ -80,6 +81,12 @@ static void WTRPST_ESPCommandHandler(void *espCmd, ESPPKT_RxPacket_TD *packet);
   */
 void WTRPST_tick(void)
 {
+	if(isESPReservedForUSB)
+	{
+		state = WTRPST_STATE_IDLE;
+		return;
+	}
+
 	//Timer
 	if(tmr)
 		tmr--;
@@ -95,8 +102,7 @@ void WTRPST_tick(void)
 		ESP_CMD_SubscribeToPackets(&espCmd, &espPacketInterface);
 
 		//Hardware power up
-		HAL_GPIO_WritePin(GPIO_ESP_FLASH_GPIO_Port, GPIO_ESP_FLASH_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIO_ESP_NPD_EN_GPIO_Port, GPIO_ESP_NPD_EN_Pin, GPIO_PIN_SET);
+		ESP_SetMode(&esp, ESP_BOOTMODE_Application);
 		tmr = 500;
 		state = WTRPST_STATE_AWAITSTABLEPOWER;
 		break;
@@ -204,8 +210,7 @@ void WTRPST_tick(void)
 		break;
 
 	case WTRPST_STATE_SHUTDOWN:
-		HAL_GPIO_WritePin(GPIO_ESP_FLASH_GPIO_Port, GPIO_ESP_FLASH_Pin, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIO_ESP_NPD_EN_GPIO_Port, GPIO_ESP_NPD_EN_Pin, GPIO_PIN_RESET);
+		ESP_SetMode(&esp, ESP_BOOTMODE_Disabled);
 
 		flags.post = false;
 		flags.wifiConnectACK = false;

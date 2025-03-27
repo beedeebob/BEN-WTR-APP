@@ -94,6 +94,12 @@ uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
 uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
 
 /* USER CODE BEGIN PRIVATE_VARIABLES */
+USBD_CDC_LineCodingTypeDef LineCoding = {
+  115200,                       /* baud rate */
+  0x00,                         /* stop bits-1 */
+  0x00,                         /* parity - none */
+  0x08                          /* nb. of bits 8 */
+};
 
 /* USER CODE END PRIVATE_VARIABLES */
 
@@ -127,7 +133,7 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length);
 static int8_t CDC_Receive_FS(uint8_t* pbuf, uint32_t *Len);
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_DECLARATION */
-void CDC_ReceivedHandler(uint8_t *data, uint32_t length);
+USBD_StatusTypeDef USB_ReceiveHandler(uint8_t *data, uint32_t length);
 
 /* USER CODE END PRIVATE_FUNCTIONS_DECLARATION */
 
@@ -219,11 +225,20 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
   /* 6      | bDataBits  |   1   | Number Data bits (5, 6, 7, 8 or 16).          */
   /*******************************************************************************/
     case CDC_SET_LINE_CODING:
-
+        LineCoding.bitrate = (uint32_t) (pbuf[0] | (pbuf[1] << 8) | (pbuf[2] << 16) | (pbuf[3] << 24));
+        LineCoding.format = pbuf[4];
+        LineCoding.paritytype = pbuf[5];
+        LineCoding.datatype = pbuf[6];
     break;
 
     case CDC_GET_LINE_CODING:
-
+        pbuf[0] = (uint8_t) (LineCoding.bitrate);
+        pbuf[1] = (uint8_t) (LineCoding.bitrate >> 8);
+        pbuf[2] = (uint8_t) (LineCoding.bitrate >> 16);
+        pbuf[3] = (uint8_t) (LineCoding.bitrate >> 24);
+        pbuf[4] = LineCoding.format;
+        pbuf[5] = LineCoding.paritytype;
+        pbuf[6] = LineCoding.datatype;
     break;
 
     case CDC_SET_CONTROL_LINE_STATE:
@@ -260,11 +275,13 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
-	CDC_ReceivedHandler(Buf, *Len);
+	USBD_StatusTypeDef result = USB_ReceiveHandler(Buf, *Len);
+	if(result != USBD_OK)
+		return result;
 
-  USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
-  USBD_CDC_ReceivePacket(&hUsbDeviceFS);
-  return (USBD_OK);
+	USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
+	USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+	return (USBD_OK);
   /* USER CODE END 6 */
 }
 
@@ -287,8 +304,9 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
   if (hcdc->TxState != 0){
     return USBD_BUSY;
   }
-  assert(Len <= sizeof(UserTxBufferFS));
+
   memcpy(UserTxBufferFS, Buf, Len);
+
   USBD_CDC_SetTxBuffer(&hUsbDeviceFS, UserTxBufferFS, Len);
   result = USBD_CDC_TransmitPacket(&hUsbDeviceFS);
   /* USER CODE END 7 */
@@ -296,9 +314,39 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 }
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_IMPLEMENTATION */
-__attribute ((weak)) void CDC_ReceivedHandler(uint8_t *data, uint32_t length)
-{
 
+/**
+  * @brief  USB Received handler
+  * @param  data: Pointer to the received data
+  * @param  length: Amount of data received
+  * @retval USBD_OK if all operations are OK else USBD_FAIL or USBD_BUSY
+  */
+__attribute__((weak)) USBD_StatusTypeDef USB_ReceiveHandler(uint8_t *data, uint32_t length)
+{
+	return USBD_OK;
+}
+
+/**
+  * @brief  Data received over USB OUT endpoint are sent over CDC interface
+  *         through this function.
+  *
+  *         @note
+  *         This function will issue a NAK packet on any OUT packet received on
+  *         USB endpoint until exiting this function. If you exit this function
+  *         before transfer is complete on CDC interface (ie. using DMA controller)
+  *         it will result in receiving more data while previous ones are still
+  *         not sent.
+  *
+  * @param  Buf: Buffer of data to be received
+  * @param  Len: Number of data received (in bytes)
+  * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
+  */
+void CDC_ReceiveRestart(void)
+{
+  /* USER CODE BEGIN 6 */
+	USBD_CDC_SetRxBuffer(&hUsbDeviceFS, UserRxBufferFS);
+	USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+  /* USER CODE END 6 */
 }
 
 /* USER CODE END PRIVATE_FUNCTIONS_IMPLEMENTATION */

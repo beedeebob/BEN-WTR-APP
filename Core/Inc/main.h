@@ -45,6 +45,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stdbool.h"
 
 /* USER CODE END Includes */
 
@@ -55,6 +56,7 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+extern bool isESPReservedForUSB;
 
 /* USER CODE END EC */
 

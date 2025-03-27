@@ -86,7 +86,7 @@ void MX_USB_DEVICE_Init(void)
   }
 
   /* USER CODE BEGIN USB_DEVICE_Init_PostTreatment */
-  HAL_GPIO_WritePin(GPIO_USB_PU_GPIO_Port, GPIO_USB_PU_Pin, GPIO_PIN_SET);
+
   /* USER CODE END USB_DEVICE_Init_PostTreatment */
 }
 

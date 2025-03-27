@@ -34,7 +34,7 @@
 #include <usbStreamReader.h>
 #include "string.h"
 #include "usbPacketIDs.h"
-#include "usbHandler.h"
+#include "USBInterface.h"
 #include "stdbool.h"
 #include "utils.h"
 
@@ -195,7 +195,7 @@ static void USR_tickStreams(USR_StreamReader_td *stream)
 		//Request data
 		data[0] = pktUSRClose;
 		data[1] = stream->streamID;
-		if(USBHND_sendPacket(data, 2) == true)
+		if(USBINT_TransmitPacket(data, 2) == true)
 		{
 			USR_DeStackStream(stream);
 			stream->flags |= USR_FLAG_REMOVED;
@@ -210,7 +210,7 @@ static void USR_tickStreams(USR_StreamReader_td *stream)
 	{
 		data[0] = pktUSRAlive;
 		data[1] = stream->streamID;
-		if(USBHND_sendPacket(data, 2) == true)
+		if(USBINT_TransmitPacket(data, 2) == true)
 			stream->keepAliveTmr = 0;
 	}
 }
@@ -259,7 +259,7 @@ static void USR_RequestUSBData(USR_StreamReader_td *stream)
 	data[5] = (uint8_t)(offset >> 24);
 	data[6] = (uint8_t)(availableSpace);
 	data[7] = (uint8_t)(availableSpace >> 8);
-	if(USBHND_sendPacket(data, 8) == true)
+	if(USBINT_TransmitPacket(data, 8) == true)
 	{
 		stream->requestedOffset = offset;
 		stream->requestedLength = availableSpace;

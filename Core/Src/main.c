@@ -26,7 +26,7 @@
 #include "weather.h"
 #include "bme280.h"
 #include "led.h"
-#include "usbHandler.h"
+#include "USBInterface.h"
 #include "usbStreamReader.h"
 #include "fileStreamWriter.h"
 #include "esp.h"
@@ -34,6 +34,7 @@
 #include "espPost.h"
 #include "espDriver.h"
 #include "jump.h"
+#include "espThroughHelper.h"
 
 /* USER CODE END Includes */
 
@@ -57,6 +58,7 @@
 /* USER CODE BEGIN PV */
 ESP_td esp;
 ESP_CMD_td espCmd;
+bool isESPReservedForUSB;
 
 /* USER CODE END PV */
 
@@ -617,11 +619,12 @@ void MAIN_milli(void)
 {
 	WTR_milli();
 	BME_milli();
-	USBHND_milli();
+	USBINT_milli();
 	USR_millisecondTick();
 	FSW_tick();
 	ESP_tick(&esp);
 	ESP_CMD_Tick(&espCmd);
+	ESP_PGM_milli(&esp);
 }
 
 /* USER CODE END 4 */
