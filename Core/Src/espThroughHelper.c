@@ -15,6 +15,8 @@
 #include "utils.h"
 
 /* Private includes ------------------------------------------------------------------------------------------------*/
+#include "usbPacketIDs.h"
+
 /* Private typedef -------------------------------------------------------------------------------------------------*/
 /* Private define --------------------------------------------------------------------------------------------------*/
 /* Private macro ---------------------------------------------------------------------------------------------------*/
@@ -51,11 +53,12 @@ void ESP_PGM_milli(ESP_td *esp)
 
 	//Periodic Receive
 	uint32_t available = ESP_GetReceivedCount(esp);
-	if((tmr == 0) || (available > 100))
+	if(((tmr == 0) && (available > 0)) || (available > 100))
 	{
-		uint8_t length = utlMin(available, sizeof(data));
-		if(ESP_Receive(esp, data, length) == ESP_OK)
+		uint8_t length = utlMin(available, sizeof(data) - 1);
+		if(ESP_Receive(esp, &data[1], length) == ESP_OK)
 		{
+			data[0] = pktESPReceiveData;
 			dataLength = length;
 			if(ESP_PGM_RxHandler(esp, data, dataLength))
 			{

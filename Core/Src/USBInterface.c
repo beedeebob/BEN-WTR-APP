@@ -173,6 +173,7 @@ static bool USBINT_PacketHandler(BPKT_Packet_TD *packet)
 		toSend[idx++] = pktACK;
 		toSend[idx++] = pktESPLockToUSB;	//Packet
 		USBINT_TransmitPacket(toSend, idx);
+		break;
 	}
 	case pktESPModeReq:
 	{
@@ -181,6 +182,7 @@ static bool USBINT_PacketHandler(BPKT_Packet_TD *packet)
 		toSend[idx++] = pktESPModeRet;
 		toSend[idx++] = (uint8_t)ESP_GetMode(&esp);	//Packet
 		USBINT_TransmitPacket(toSend, idx);
+		break;
 	}
 	case pktESPModeSet:
 	{
@@ -191,6 +193,7 @@ static bool USBINT_PacketHandler(BPKT_Packet_TD *packet)
 		toSend[idx++] = pktACK;
 		toSend[idx++] = pktESPModeSet;
 		USBINT_TransmitPacket(toSend, idx);
+		break;
 	}
 	case pktESPTransmitData:
 	{
@@ -202,6 +205,7 @@ static bool USBINT_PacketHandler(BPKT_Packet_TD *packet)
 		toSend[idx++] = pktACK;
 		toSend[idx++] = pktESPModeSet;
 		USBINT_TransmitPacket(toSend, idx);
+		break;
 	}
 	}
 	return true;

@@ -623,7 +623,8 @@ void MAIN_milli(void)
 	USR_millisecondTick();
 	FSW_tick();
 	ESP_tick(&esp);
-	ESP_CMD_Tick(&espCmd);
+	if(!isESPReservedForUSB)
+		ESP_CMD_Tick(&espCmd);
 	ESP_PGM_milli(&esp);
 }
 
