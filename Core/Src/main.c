@@ -578,10 +578,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIO_BME280_NCS_GPIO_Port, GPIO_BME280_NCS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_ESP_RST_Pin|GPIO_USB_PU_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIO_USB_PU_GPIO_Port, GPIO_USB_PU_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIO_BME280_NCS_GPIO_Port, GPIO_BME280_NCS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIO_FLASH_NCS_GPIO_Port, GPIO_FLASH_NCS_Pin, GPIO_PIN_SET);
@@ -589,19 +589,19 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_ESP_NPD_EN_Pin|GPIO_ESP_FLASH_Pin, GPIO_PIN_RESET);
 
+  /*Configure GPIO pins : GPIO_ESP_RST_Pin GPIO_USB_PU_Pin GPIO_FLASH_NCS_Pin */
+  GPIO_InitStruct.Pin = GPIO_ESP_RST_Pin|GPIO_USB_PU_Pin|GPIO_FLASH_NCS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
   /*Configure GPIO pins : GPIO_BME280_NCS_Pin GPIO_ESP_NPD_EN_Pin GPIO_ESP_FLASH_Pin */
   GPIO_InitStruct.Pin = GPIO_BME280_NCS_Pin|GPIO_ESP_NPD_EN_Pin|GPIO_ESP_FLASH_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : GPIO_USB_PU_Pin GPIO_FLASH_NCS_Pin */
-  GPIO_InitStruct.Pin = GPIO_USB_PU_Pin|GPIO_FLASH_NCS_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */

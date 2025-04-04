@@ -75,6 +75,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define TIM1_LED_Pin GPIO_PIN_13
 #define TIM1_LED_GPIO_Port GPIOC
+#define GPIO_ESP_RST_Pin GPIO_PIN_1
+#define GPIO_ESP_RST_GPIO_Port GPIOA
 #define USART2_TX_ESP_Pin GPIO_PIN_2
 #define USART2_TX_ESP_GPIO_Port GPIOA
 #define USART2_RX_ESP_Pin GPIO_PIN_3

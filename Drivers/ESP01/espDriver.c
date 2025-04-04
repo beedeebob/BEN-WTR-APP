@@ -154,7 +154,7 @@ void ESPDRV_DMATransferCompleteHandler(DMA_TypeDef * dma)
  */
 void ESP_GPIORESET(ESP_td *esp, uint8_t pinState)
 {
-	//Not currently connected
+	HAL_GPIO_WritePin(GPIO_ESP_RST_GPIO_Port, GPIO_ESP_RST_Pin, pinState);
 }
 
 /* ---------------------------------------------------------------------------*/
